@@ -1,3 +1,4 @@
+#pragma once
 #include "base.h"
 
 // 取消注释可开启缓冲(针对大文件)
