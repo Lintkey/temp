@@ -13,7 +13,7 @@ inl void dij(G &g, us s, bool *vis, T *dis) {
     for(us u, v; !que.empty();) {
         u = que.top().second; que.pop();
         if(vis[u]) continue; vis[u] = 1;
-        for(us e = g.hd[u]; ~e; g.next(e))
+        for(us e = g.head(u); ~e; g.next(e))
             if(ei = &g[e], (ds = dis[u] + ei->w) < dis[v = ei->v])
                 que.push({dis[v] = ds, v});
     }
@@ -28,7 +28,7 @@ inl void spfa(G &g, us s, bool *vis, T *dis) {
     T ds; typename G::E *ei;
     for(us u, v; !que.empty();) {
         u = que.front(); que.pop(); vis[u] = 0;
-        for(us e = g.hd[u]; ~e; g.next(e))
+        for(us e = g.head(u); ~e; g.next(e))
             if(ei = &g[e], (ds = dis[u] + ei->w) < dis[v = ei->v])
                 if(dis[v] = ds, !vis[v]) que.push(v), vis[v] = 1;
     }
