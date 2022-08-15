@@ -6,7 +6,7 @@
 #define con const
 #define cer constexpr
 #define ret return
-#define whi(c) while(c)
+#define whi(...) while(__VA_ARGS__)
 using namespace std;
 using is = int;
 using il = long long;
