@@ -10,11 +10,11 @@ struct MT {
     T raw;
     inl MT() : raw(0) {} MT(con T _raw) : raw(_raw % M) {}
     inl operator T() con { ret raw; }
-    inl void add(con MT &r) { raw += r.raw; if(raw >= M) raw -= M; }
-    inl void sub(con MT &r) { if(r.raw > raw) raw += M - r.raw; else raw -= r.raw; }
-    inl void mul(con MT &r) { raw = (U(raw) * r.raw) % M; }
-    inl MT operator-() { MT r; ret r.raw = M - raw, r; }
-    inl MT &operator=(con MT &r) { ret raw = r.raw, *this; }
+    inl void add(con MT &r) { raw+=r.raw; if(raw>=M) raw-=M; }
+    inl void sub(con MT &r) { if(r.raw>raw) raw+=M-r.raw; else raw-=r.raw; }
+    inl void mul(con MT &r) { raw = (U(raw) * r.raw)%M; }
+    inl MT operator-() { MT r; ret r.raw=M-raw, r; }
+    inl MT &operator=(con MT &r) { ret raw=r.raw, *this; }
     inl MT &operator+=(con MT &r) { ret add(r), *this; }
     inl MT &operator-=(con MT &r) { ret sub(r), *this; }
     inl MT &operator*=(con MT &r) { ret mul(r), *this; }

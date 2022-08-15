@@ -10,8 +10,8 @@
 // #undef fread
 template<class T>
 inl T &fin(T &v) {
-    is c = gc(); bool f = v = 0;
-    whi(!isdigit(c)) f = (c = gc()) == '-';
-    for(; isdigit(c); c = gc()) v = v * 10 + c - '0';
-    ret f ? v = -v : v;
+    is c=gc(); bool f=v=0;
+    whi(!isdigit(c)) f = (c=gc()) == '-';
+    for(; isdigit(c); c=gc()) v = v * 10 + c - '0';
+    ret f ? v=-v : v;
 }
