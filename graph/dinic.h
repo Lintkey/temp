@@ -31,6 +31,8 @@ typename G::E::FT fdfs(G &g, us u, typename G::E::FT f) {
 // TODO: ISAP，未优化时复杂度和dinic相同，优化后可大幅提升速度
 // 最坏复杂度O((n^2)*m)，二分匹配问题O(m*sqrt(n))
 // hd, ds: 缓存数组，传入两个大小与g.n(节点数)等大的无用数组即可
+// 另外G的E必须包含FT(返回值类型)和静态常量最大值FINF，例如
+// struct EI { us v, us c; using FT = ul; stc con ul FINF = ULINF; }
 template<class G>
 inl typename G::E::FT dinic(G &g, us s, us t, us *hd, us *ds) {
     fdfs_hd = hd; fdfs_ds = ds; fdfs_t = t;
