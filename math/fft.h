@@ -10,8 +10,8 @@
 #include "complex.h"
 
 // len(fx) == 1<<lgl >= sz(fx)
-template<class F>
-inl void fft(CT<F> *arr, us lgl, con is fg) {
+template<is fg, class F>
+inl void fft(CT<F> *arr, us lgl) {
     con us LEN = 1 << lgl;
     for(us i=1, j=LEN>>1; i<LEN-1; ++i) { // 顺序倒置
         if(i>j) swap(arr[i], arr[j]); // 交换，i>j保证只交换一次
@@ -35,10 +35,10 @@ inl void fft(CT<F> *arr, us lgl, con is fg) {
 }
 
 template<class F>
-inl void dft(CT<F> *fc, us lgl) { ret fft(fc, lgl, 1); }
+inl void dft(CT<F> *fc, us lgl) { ret fft<1>(fc, lgl); }
 
 template<class F>
 inl void idft(CT<F> *fx, us lgl) {
-    fft(fx, lgl, -1); con us LEN = 1 << lgl;
+    fft<-1>(fx, lgl); con us LEN = 1 << lgl;
     for(us i=0; i<LEN; ++i) fx[i].real(fx[i].real()/LEN);
 }
