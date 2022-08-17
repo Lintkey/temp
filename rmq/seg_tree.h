@@ -1,7 +1,9 @@
-// WARN: 以下实现常数较大，比大多数实现慢，开启O2则与裸实现相差不大
+// WARN: 经过测试，裸实现线段树比封装后快很多，如时间充足建议手写
+// WARN: 以下实现常数较大，比大多数裸实现慢，开启O2则与裸实现相差不大
 #pragma once
 #include "../base.h"
 
+// luogu上看了一眼，发现开堆法普遍比这样省内存的方法快很多，后期研究一下
 // 可维护[0, LEN)范围，所有[l, r)均左闭右开
 // 调用节点成员使用->访问，例：seg->add(l, r, 1);
 // 嫌麻烦可以直接裸用下面的Node
@@ -25,7 +27,7 @@ private:
 };
 
 // BasicNode，仅支持加乘和查询区间和。(减法可复用，除法可复制增加)
-// 依据使用场景，可删除部分内容以加速(类成员越少越快)，洛谷O2快50ms...
+// 依据使用场景，可删除部分内容以加速(类成员越少越快)
 // TIP: 如想区间修改为同一个值，可以mul(,,0)，add(,,up)
 template<class T>
 struct BNode {
@@ -70,6 +72,7 @@ struct BNode {
     }
 };
 
+// MNode 极值Node
 template<class T, class cmp = less<T>>
 struct MNode {
     us lb, rb;
