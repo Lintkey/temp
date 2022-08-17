@@ -19,7 +19,7 @@ using fx = long double;
 cer ul ULINF = UINT64_MAX, LINF = 0x3f3f3f3f3f3f3f3f;
 cer us USINF = UINT32_MAX, SINF = 0x3f3f3f3f;
 con string ANS[2] = {"NO", "YES"};
-extern con ul MOD;
+extern con us MOD;
 extern con us MAX;
 template<class T>
 inl void mem(T *arr, us b, us n) { memset(arr, b, n * sf(T)); }
