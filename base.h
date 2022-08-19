@@ -21,6 +21,7 @@ using fx = long double;
 template<class T> inl cer T UINF() { ret T(-1); }
 template<class T> inl cer T INF() { ret T(0x3f3f3f3f3f3f3f3f); }
 con string ANS[2] = {"NO", "YES"};
+cer us MAXB = 1 << 20;
 
 template<class T>
 inl void mem(T *arr, us b, us n) { memset(arr, b, n * sf(T)); }
