@@ -1,13 +1,14 @@
 // 为了解耦和减小码量，这里的图仅用来储存边的信息
 // 欲存储诸如距离(dis)，是否访问(vis)等信息，建议自己开辟数组或结构体封装，这样更好
-// 使用示例: https://www.luogu.com.cn/record/83557916
+// 旧使用示例: https://www.luogu.com.cn/record/83557916
 #pragma once
 #include "../base.h"
 
-template<us MAXN, us MAXE, class EI>
+// WARN: ELEN没有开双倍空间
+template<us NLEN, us ELEN, class EI>
 struct CFS {  // 链式前向星
     using E = EI; // 此声明用于辅助其他算法的封装
-    us n, hd[MAXN], nx[MAXE], it; EI val[MAXE];
+    us n, hd[NLEN], nx[ELEN], it; EI val[ELEN];
     inl void init(us _n) { mem(hd, it=-1, n=_n); } // WARN: INIT!!!
     inl void add(us u, EI ei) {
         nx[++it] = hd[u]; val[it]=ei; hd[u]=it; }
