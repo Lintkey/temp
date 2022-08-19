@@ -1,5 +1,6 @@
-// 带缓冲快读，(unsigned/signed)整形和有图形char已经过测试，string和char *未测试
-// WARN: 对于交互题，请使用普通快读!!!
+// WARN: 对于交互题，请使用普通快读!(印象中缓冲式快读不会等待stdin更新，况且交互题IO频繁，没必要开缓冲)
+// WARN: string和char *仅经过简单测试
+// 带缓冲快读，(unsigned/signed)整形和有图形char已经过测试，
 // TODO: double, float
 #pragma once
 #include "base.h"
@@ -26,19 +27,19 @@ inl char &fin(char &v) { ret fit(), v = gc(); } // 读取非空字符
 template<>
 inl string &fin(string &str) {
     str.clear();
-    for(char *fp; fit()!=EOF;) { // 依据实际情况，可以考虑展开循环
+    for(char *fp; fit()!=EOF;) {
         for(fp=fr; fp<ed&&ischar(*fp); ++fp){}
-        str.append(fr, fr-ed);
+        str.append(fr, fp - fr);
         if((fr=fp)!=ed) break;
     } ret str;
 }
 
-// 返回值为读取到的位置
-inl char *fin(char *cp) {
+inl char *fin(char *ch) {
+    char *cp = ch;
     for(char *fp; fit()!=EOF;) {
         for(fp=fr; fp<ed&&ischar(*fp); ++fp){}
-        con us SZ = fr - fp;
-        memcpy(cp, fp, SZ*sf(char)); cp += SZ;
+        con us SZ = fp - fr;
+        memcpy(cp, fr, SZ*sf(char)); cp += SZ;
         if((fr=fp)!=ed) break;
-    } ret *cp = '\0', cp;
+    } ret *cp = '\0', ch;
 }
