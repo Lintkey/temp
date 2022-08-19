@@ -1,7 +1,7 @@
 // TIP: 以下实现比大多数裸实现常数要小
 // LOG_L不用开到(1<<LOG_L)>=LEN，只用开到(1<<(LOG_L+1))>LEN，即LEN的bit位数
 // 注意，老版本编译器可能没有iota、log2，请手动更改17~18和33~34行
-// WARN: 使用前请记得stf.build(l, r)和st.build(l, r)
+// WARN: 使用前请记得stf.init(l, r)和st.init(l, r)
 #pragma once
 #include "../base.h"
 
@@ -13,7 +13,7 @@ template<us LEN, us LOG_L>
 struct STF {
     us far[LOG_L + 1][LEN] = {0};
     inl con us *operator[](us idx) con { ret far[idx]; }
-    inl void build(us l, us r, us logl = LOG_L) { // WARN: INIT!!!
+    inl void init(us l, us r, us logl = LOG_L) { // WARN: INIT!!!
         iota(far[0] + l, far[0] + r - 1, l + 1);
         // for(us i=l+1; i<r; ++i) far[0][i - 1] = i; // 备用(老版本没有iota)
         far[0][r - 1] = r - 1;
@@ -35,7 +35,7 @@ struct ST {
         con T &lv = val[logd][l], &rv = val[logd][r - (1 << logd)];
         ret cmp()(lv, rv) ? lv : rv;
     }
-    inl void build(us l, us r, us logl = LOG_L) { ST_FOR { // WARN: INIT!!!
+    inl void init(us l, us r, us logl = LOG_L) { ST_FOR { // WARN: INIT!!!
         con T &lv = val[i - 1][j], &rv = val[i - 1][far[i - 1][j]];
         val[i][j] = cmp()(lv, rv) ? lv : rv;
     }}
