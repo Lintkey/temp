@@ -1,7 +1,9 @@
+// WARN: 此实现未经测试
 #pragma once
 #include "../base.h"
 
-template<class G, class D> // G=CFS<MAXN, MAXE, EI> 为了简略使用模板
+// struct EI { v; }
+template<class G, class D>
 inl void bfs(G &g, us s, D *dis) {
     mem(dis, 0xff, g.n); dis[s] = 0;
     queue<D> que; que.push(s);

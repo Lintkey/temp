@@ -3,7 +3,6 @@
 #pragma once
 #include "../base.h"
 
-// luogu上看了一眼，发现开堆法普遍比这样省内存的方法快很多，后期研究一下
 // 可维护[0, LEN)范围，所有[l, r)均左闭右开
 // 调用节点成员使用->访问，例：seg->add(l, r, 1);
 // 嫌麻烦可以直接裸用下面的Node
@@ -11,7 +10,7 @@ template<us LEN, class Node>
 struct SegTree {
     Node pool[(LEN << 1) - 1], *iter = pool;
     inl Node *operator->() { ret iter; }
-    inl void init(us l, us r) { iter = pool; build(l, r); }
+    inl void init(us l, us r) { iter = pool; build(l, r); } // WARN: INIT!!!
 private:
     void build(us l, us r) {  // 经测试，无返回值建树会快一点
         Node *ln, *rn;
@@ -72,7 +71,7 @@ struct BNode {
     }
 };
 
-// MNode 极值Node
+// MNode 极值Node，使用类似BNode，less取最小值，greater取最大值
 template<class T, class cmp = less<T>>
 struct MNode {
     us lb, rb;

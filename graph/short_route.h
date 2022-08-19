@@ -1,8 +1,8 @@
 // TIP: 以下实现比大多数裸实现常数要小
 #pragma once
 #include "../base.h"
-// 使用CFS<MAXN, MAXE, EI>::E的w做边权
 
+// struct EI { v; w; }
 template<class G, class D> // G=CFS<MAXN, MAXE, EI> 为了简略使用模板
 inl void dij(G &g, us s, bool *vis, D *dis) {
     mem(dis, 0xff, g.n);
@@ -19,7 +19,8 @@ inl void dij(G &g, us s, bool *vis, D *dis) {
     }
 }
 
-// 慎用，随机数据下良好，但是会被菊花图卡
+// 备用，随机数据下良好，但是会被菊花图卡
+// struct EI { v; w; }
 template<class G, class D>
 inl void spfa(G &g, us s, bool *vis, D *dis) {
     mem(dis, 0xff, g.n); dis[s]=0;
