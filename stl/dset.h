@@ -18,7 +18,7 @@ struct DSet {
     inl bool merge(us &l, us &r) {
         if((l=find(l)) == (r=find(r))) ret 0;
         if(rnk[l]<rnk[r]) swap(l, r); // WARN: l',r'与l,r无一一对应关系
-        rnk[l] += rnk[l] == rnk[r]; // 按高度度合并
+        else if(rnk[l]==rnk[r]) ++rnk[l]; // 按高度度合并
         ret far[r]=l, 1;
     }
 };
