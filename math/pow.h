@@ -18,7 +18,7 @@ inl us mpow(con us x, N nth, con us M) {
 
 // 常量加速
 template<us M, class N>
-inl us mpow(con us x, N nth) {
+inl us mpow(con us x, N nth=M-2) { // 默认可求逆元
     ul res(1), bs(x);
     for(; nth; bs=(bs*bs)%M, nth>>=1)
         if(nth&1) res = (res*bs)%M;
