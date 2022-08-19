@@ -1,5 +1,6 @@
 // WARN: 对于交互题，建议使用printf!(交互题IO频繁，没必要开缓冲)
 // 欲手动刷新缓冲可以执行fout()
+// TIP: 此实现自带结束时自动缓冲，可以不用在最后执行fout()
 #pragma once
 #include "base.h"
 
