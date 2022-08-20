@@ -17,6 +17,7 @@ using ul = unsigned long long;
 using fs = float;
 using fl = double;
 #define ix __int128
+#define ux unsigned __int128
 using fx = long double;
 template<class T> inl cer T UINF() { ret T(-1); }
 template<class T> inl cer T INF() { ret T(0x3f3f3f3f3f3f3f3f); }
