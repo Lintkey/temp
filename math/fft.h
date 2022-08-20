@@ -4,6 +4,8 @@
 //                  a[i] *= b[i]   // 点值表达式乘法 O(n)
 //                  idft(a)        // 将a转变回普通表示法 O(nlgn)
 // 利用矩阵可以证明，只需反转系数并/len，即可逆变换，故dft和idft可共用一套代码
+// 使用方法，调用convolu(A, B, lgl)即可计算AB卷积，返回结果储存在A中，B变为对应的点值表达式
+// WARN: 必须确保(1<<lgl)>=预期卷积长度
 #pragma once
 #include "../base.h"
 #include "conv.h"
@@ -11,7 +13,7 @@
 
 // len(fx) == 1<<lgl >= sz(fx)
 template<is fg, class F>
-inl void fft(CT<F> *arr, us lgl) {
+inl void FFT(CT<F> *arr, con us lgl) {
     con us LEN = 1 << lgl;
     for(us i=1, j=LEN>>1; i<LEN-1; ++i) { // 顺序倒置
         if(i>j) swap(arr[i], arr[j]); // 交换，i>j保证只交换一次
@@ -35,10 +37,34 @@ inl void fft(CT<F> *arr, us lgl) {
 }
 
 template<class F>
-inl void dft(CT<F> *fc, us lgl) { ret fft<1>(fc, lgl); }
+inl void DFT(CT<F> *fc, con us lgl) { ret FFT<1>(fc, lgl); }
 
 template<class F>
-inl void idft(CT<F> *fx, us lgl) {
-    fft<-1>(fx, lgl); con us LEN = 1 << lgl;
+inl void IDFT(CT<F> *fx, con us lgl) {
+    FFT<-1>(fx, lgl); con us LEN = 1 << lgl;
     for(us i=0; i<LEN; ++i) fx[i].real(fx[i].real()/LEN);
+}
+
+template<class F>
+inl void convolu(CT<F> *lfc, CT<F> *rfc, con us lgl) {
+    con us LEN = 1 << lgl;
+    DFT(lfc, lgl); IDFT(rfc, lgl);
+    for(us i=0; i<LEN; ++i) lfc[i] *= rfc[i];
+    IDFT(lfc, lgl);
+}
+
+// WARN: 此实现未经测试，通常情况下答案要求取模，因此建议使用CDQ_NTT
+template<class F, CT<F> *A, CT<F> *B>
+inl void CDQ_FFT(CT<F> *f, CT<F> *g, con us L, con us R) {
+    if(L+1==R) ret;
+    con us MID = (L+R) >> 1, LEN = R - L;
+    CDQ_FFT<F, A, B>(f, g, L, MID);
+    us lgl = 0, len = 1;
+    whi(len<LEN) ++lgl, len<<=1;
+    mem(A+MID-L, 0, len-(MID-L));
+    for(us i=L; i<MID; ++i) A[i-L] = f[i];
+    memcpy(B, g+1, len*sf(CT<F>));
+    convolu(A, B, lgl);
+    for(us i=MID; i<R; ++i) f[i] += A[i-L-1];
+    CDQ_FFT<F, A, B>(f, g, MID, R);
 }
