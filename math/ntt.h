@@ -1,7 +1,8 @@
 // 注意，ntt使用前需确保多项式的各系数%=M
 // ntt为fft的优化版本，注意，使用的前提是预期多项式系数不大于M(答案要求取质数模则可直接用)
 // dft<MOD, G>(A); dft<MOD, G>(B); A = (A*B) % MOD; idft<MOD, GI>(A)
-// M(MOD)必须为(2^m)k+1型质数，G可以取[2, MOD)，GI为G的逆元
+// M(MOD)必须为(2^m)k+1型质数
+// G为原根(gcd(G, MOD))，GI为G的逆元
 #pragma once
 #include "../base.h"
 #include "pow.h"
