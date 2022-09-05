@@ -12,17 +12,19 @@
 using namespace std;
 using is = int;
 using il = long long;
+#define ix __int128
+using uc = unsigned char;
 using us = unsigned int;
 using ul = unsigned long long;
+#define ux unsigned __int128
 using fs = float;
 using fl = double;
-#define ix __int128
-#define ux unsigned __int128
 using fx = long double;
 template<class T> inl cer T UINF() { ret T(-1); }
 template<class T> inl cer T INF() { ret T(0x3f3f3f3f3f3f3f3f); }
-con string ANS[2] = {"NO", "YES"};
+cer con char *ANS[] = {"F", "T"};
 cer us MAXB = 1 << 20;
 
-template<class T>
-inl void mem(T *arr, us b, us n) { memset(arr, b, n * sf(T)); }
+template<class T> inl cer void mem(T *arr, us b, us n) { memset(arr, b, n * sf(T)); }
+template<class T> inl cer void tmx(T &lhs, con T &rhs) { if(rhs>lhs) lhs = rhs; }
+template<class T> inl cer void tmn(T &lhs, con T &rhs) { if(rhs<lhs) lhs = rhs; }
