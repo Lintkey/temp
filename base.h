@@ -25,6 +25,6 @@ template<class T> inl cer T INF() { ret T(0x3f3f3f3f3f3f3f3f); }
 cer con char *ANS[] = {"F", "T"};
 cer us MAXB = 1 << 20;
 
-template<class T> inl cer void mem(T *arr, us b, us n) { memset(arr, b, n * sf(T)); }
-template<class T> inl cer void tmx(T &lhs, con T &rhs) { if(rhs>lhs) lhs = rhs; }
-template<class T> inl cer void tmn(T &lhs, con T &rhs) { if(rhs<lhs) lhs = rhs; }
+template<class T> inl void mem(T *arr, us b, us n) { memset(arr, b, n * sf(T)); }
+template<class T> inl void tmx(T &lhs, con T &rhs) { if(rhs>lhs) lhs = rhs; }
+template<class T> inl void tmn(T &lhs, con T &rhs) { if(rhs<lhs) lhs = rhs; }
