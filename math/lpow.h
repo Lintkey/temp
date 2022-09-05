@@ -1,6 +1,8 @@
 #include "../base.h"
 
+// WARN: 该结构体使用基于上下文，请注意使用方法
 // 用于O(1)求出给定a和m时，任意a的幂次%m的值
+// 使用前init(a, m)，询问que(p)获取(a^p)%m
 template<us SQT_L>
 struct LPow {
     us SQT_M, PHI_M, M, vals[2][SQT_L];
