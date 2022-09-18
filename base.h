@@ -1,4 +1,3 @@
-#ifndef ONLINE_JUDGE
 #pragma once
 #include <bits/stdc++.h>
 #define sf(T) sizeof(T)
@@ -9,9 +8,11 @@
 #define con const
 #define cer constexpr
 #define ret return
-#define let auto
+#define var auto
+#define let const auto
 #define whi(...) while(__VA_ARGS__)
 using namespace std;
+using ic = char;
 using is = int;
 using il = long long;
 using ix = __int128;
@@ -32,5 +33,3 @@ cer us MAXB = 1 << 20;
 template<class T> inl void mem(T *arr, us b, us n) { memset(arr, b, n * sf(T)); }
 template<class T> inl void tmx(T &lhs, con T &rhs) { if(rhs>lhs) lhs = rhs; }
 template<class T> inl void tmn(T &lhs, con T &rhs) { if(rhs<lhs) lhs = rhs; }
-
-#endif
