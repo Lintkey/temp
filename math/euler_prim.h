@@ -15,4 +15,5 @@ inl us prim(con us MX, us *pris, bool *vis) {
             if(i%pris[j] == 0) break;
         }
     }
+    ret cnt;
 }
