@@ -1,5 +1,4 @@
-// WARN: 经过测试，裸实现线段树比封装后快很多，如时间充足建议手写
-// WARN: 以下实现常数较大，比大多数裸实现慢，开启O2则与裸实现相差不大
+// 经爆改分离后，常数已控制在合理范围内(个人测试均比手敲速度快或差不多)
 #pragma once
 #include "../base.h"
 
@@ -9,112 +8,115 @@
 template<us LEN, class Node>
 struct SegTree {
     Node pool[(LEN << 1) - 1], *iter = pool;
-    inl Node *operator->() { ret iter; }
-    inl void init(us l, us r) { iter = pool; build(l, r); } // WARN: INIT!!!
-private:
-    void build(us l, us r) {  // 经测试，无返回值建树会快一点
-        Node *ln, *rn;
-        if(l + 1 != r) {
-            con us md = (l + r) >> 1;
-            build(l, md); ln = iter++;
-            build(md, r); rn = iter++;
-        } else ln = rn = NULL;
-        iter->lb = l; iter->rb = r;
-        iter->val = iter->ad = 0; iter->mu = 1;
-        iter->ln = ln; iter->rn = rn;
+    inl Node *operator->() { ret pool; }
+    inl void init(us l, us r) { pool->build(&(iter=pool), l, r); }
+};
+
+template<class Node>
+struct BSNode {
+    us lb, rb;
+    Node *ln, *rn;
+    void init(Node **ite, us l, us r) { // TODO: 待优化，传参比较奇怪
+        if((lb=l) + 1 != (rb=r)) {
+            con us MID = (l + r) >> 1;
+            (ln = ++*ite)->build(ite, l, MID);
+            (rn = ++*ite)->build(ite, MID, r);
+        } else ln = rn = nullptr;
     }
 };
 
-// BasicNode，仅支持加乘和查询区间和。(减法可复用，除法可复制增加)
-// 依据使用场景，可删除部分内容以加速(类成员越少越快)
-// TIP: 如想区间修改为同一个值，可以mul(,,0)，add(,,up)
+// BNode 基础Node，区间乘/加/查询
 template<class T>
-struct BNode {
-    us lb, rb;
+struct BNode: public BSNode<BNode<T>> {
+    using F = BSNode<BNode<T>>;
     T val, mu, ad;
-    BNode *ln, *rn;
+
+    void build(BNode **ite, us l, us r) {
+        F::init(ite, l, r);
+        val = ad = 0; mu = 1;
+    }
     inl void push() {
-        if(mu ^ 1) { ln->mt(mu); rn->mt(mu); mu = 1; }
-        if(ad) { ln->at(ad); rn->at(ad); ad = 0; }
+        if(mu ^ 1) { F::ln->mt(mu); F::rn->mt(mu); mu = 1; }
+        if(ad) { F::ln->at(ad); F::rn->at(ad); ad = 0; }
     }
     T que(us l, us r) {
-        if(l == lb && rb == r) ret val;
+        if(l == F::lb && F::rb == r) ret val;
         else {
-            con us md = ln->rb; push(); T res = 0;
-            if(l < md) res += ln->que(l, min(md, r));
-            if(r > md) res += rn->que(max(l, md), r);
+            con us md = F::ln->rb; push(); T res = 0;
+            if(l < md) res += F::ln->que(l, min(md, r));
+            if(r > md) res += F::rn->que(max(l, md), r);
             ret res;
         }
     }
 
-    // 加法
-    inl void at(T up) { ad += up; val += up * T(rb - lb); }
+    inl void at(T up) { ad += up; val += up * T(F::rb - F::lb); }
     void add(us l, us r, T up) {
-        if(l == lb && rb == r) at(up);
+        if(l == F::lb && F::rb == r) at(up);
         else {
-            con us md = ln->rb; push();
-            if(l < md) ln->add(l, min(md, r), up);
-            if(r > md) rn->add(max(l, md), r, up);
-            val = ln->val + rn->val;
+            con us md = F::ln->rb; push();
+            if(l < md) F::ln->add(l, min(md, r), up);
+            if(r > md) F::rn->add(max(l, md), r, up);
+            val = F::ln->val + F::rn->val;
         }
     }
-    // 乘法，请注意：删除乘法后push第一行也要更改
     inl void mt(T up) { mu *= up; ad *= up; val *= up; }
     void mul(us l, us r, T up) {
-        if(l == lb && rb == r) mt(up);
+        if(l == F::lb && F::rb == r) mt(up);
         else {
-            con us md = ln->rb; push();
-            if(l < md) ln->mul(l, min(md, r), up);
-            if(r > md) rn->mul(max(l, md), r, up);
-            val = ln->val + rn->val;
+            con us md = F::ln->rb; push();
+            if(l < md) F::ln->mul(l, min(md, r), up);
+            if(r > md) F::rn->mul(max(l, md), r, up);
+            val = F::ln->val + F::rn->val;
         }
     }
 };
 
 // MNode 极值Node，使用类似BNode，less取最小值，greater取最大值
-template<class T, class cmp = less<T>>
-struct MNode {
-    us lb, rb;
+template<class T, T DEF, class cmp = less<T>>
+struct MNode: public BSNode<BNode<T>> {
+    using F = BSNode<BNode<T>>;
     T val, mu, ad;
-    MNode *ln, *rn;
+
+    void build(MNode **ite, us l, us r) {
+        F::init(ite, l, r);
+        ad = 0; mu = 1; val = DEF;
+    }
     inl void push() {
-        if(mu ^ 1) { ln->mt(mu); rn->mt(mu); mu = 1; }
-        if(ad) { ln->at(ad); rn->at(ad); ad = 0; }
+        if(mu ^ 1) { F::ln->mt(mu); F::rn->mt(mu); mu = 1; }
+        if(ad) { F::ln->at(ad); F::rn->at(ad); ad = 0; }
     }
     T que(us l, us r) {
-        if(l == lb && rb == r) ret val;
+        if(l == F::lb && F::rb == r) ret val;
         else {
-            con us md = ln->rb; push();
+            con us md = F::ln->rb; push();
             con bool lhs = l < md, rhs = r > md;
             if(lhs ^ rhs)
-                ret lhs ? ln->que(l, min(md, r))
-                        : rn->que(max(l, md), r);
-            con T lv = ln->que(l, min(md, r));
-            con T rv = rn->que(max(l, md), r);
+                ret lhs ? F::ln->que(l, min(md, r))
+                        : F::rn->que(max(l, md), r);
+            con T lv = F::ln->que(l, min(md, r));
+            con T rv = F::rn->que(max(l, md), r);
             ret cmp()(lv, rv) ? lv : rv;
         }
     }
 
-    // 加法
-    inl void at(T up) { ad += up; val += up * T(rb - lb); }
+    inl void at(T up) { ad += up; val += up * T(F::rb - F::lb); }
     void add(us l, us r, T up) {
-        if(l == lb && rb == r) at(up);
+        if(l == F::lb && F::rb == r) at(up);
         else {
-            con us md = ln->rb; push();
-            if(l < md) ln->add(l, min(md, r), up);
-            if(r > md) rn->add(max(l, md), r, up);
-            val = cmp()(ln->val, rn->val) ? ln->val : rn->val;
+            con us md = F::ln->rb; push();
+            if(l < md) F::ln->add(l, min(md, r), up);
+            if(r > md) F::rn->add(max(l, md), r, up);
+            val = cmp()(F::ln->val, F::rn->val) ? F::ln->val : F::rn->val;
         }
     }
-    // 乘法，请注意：删除乘法后push第一行也要更改
     inl void mt(T up) { mu *= up; ad *= up; val *= up; }
     void mul(us l, us r, T up) {
-        if(l == lb && rb == r) mt(up);
+        if(l == F::lb && F::rb == r) mt(up);
         else {
-            con us md = ln->rb; push();
-            if(l < md) ln->mul(l, min(md, r), up);
-            if(r > md) rn->mul(max(l, md), r, up);
-            val = cmp()(ln->val, rn->val) ? ln->val : rn->val;
+            con us md = F::ln->rb; push();
+            if(l < md) F::ln->mul(l, min(md, r), up);
+            if(r > md) F::rn->mul(max(l, md), r, up);
+            val = cmp()(F::ln->val, F::rn->val) ? F::ln->val : F::rn->val;
         }
     }
 };
