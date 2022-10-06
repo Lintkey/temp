@@ -32,8 +32,8 @@ struct BNode: public BSNode<BNode<T>> {
     T val, mu, ad;
 
     void build(BNode **ite, us l, us r) {
-        F::init(ite, l, r);
         val = ad = 0; mu = 1;
+        ret F::init(ite, l, r);
     }
     inl void push() {
         if(mu ^ 1) { F::ln->mt(mu); F::rn->mt(mu); mu = 1; }
@@ -73,13 +73,13 @@ struct BNode: public BSNode<BNode<T>> {
 
 // MNode 极值Node，使用类似BNode，less取最小值，greater取最大值
 template<class T, T DEF, class cmp = less<T>>
-struct MNode: public BSNode<BNode<T>> {
-    using F = BSNode<BNode<T>>;
+struct MNode: public BSNode<MNode<T, DEF, cmp>> {
+    using F = BSNode<MNode<T, DEF, cmp>>;
     T val, mu, ad;
 
     void build(MNode **ite, us l, us r) {
-        F::init(ite, l, r);
         ad = 0; mu = 1; val = DEF;
+        ret F::init(ite, l, r);
     }
     inl void push() {
         if(mu ^ 1) { F::ln->mt(mu); F::rn->mt(mu); mu = 1; }
