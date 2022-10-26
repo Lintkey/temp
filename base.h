@@ -15,11 +15,11 @@ using namespace std;
 using ic = char;
 using is = int;
 using il = long long;
-using ix = __int128;
+#define ix __int128
 using uc = unsigned char;
 using us = unsigned int;
 using ul = unsigned long long;
-using ux = unsigned __int128;
+#define ux unsigned __int128
 using fs = float;
 using fl = double;
 using fx = long double;
