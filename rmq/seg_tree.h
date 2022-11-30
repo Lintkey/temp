@@ -72,6 +72,7 @@ struct BNode: public BSNode<BNode<T>> {
 };
 
 // MNode 极值Node，使用类似BNode，less取最小值，greater取最大值
+// 区间乘不考虑负数！！！建议开两个模拟
 template<class T, T DEF, class cmp = less<T>>
 struct MNode: public BSNode<MNode<T, DEF, cmp>> {
     using F = BSNode<MNode<T, DEF, cmp>>;
@@ -99,7 +100,7 @@ struct MNode: public BSNode<MNode<T, DEF, cmp>> {
         }
     }
 
-    inl void at(T up) { ad += up; val += up * T(F::rb - F::lb); }
+    inl void at(T up) { ad += up; val += up; }
     void add(us l, us r, T up) {
         if(l == F::lb && F::rb == r) at(up);
         else {
