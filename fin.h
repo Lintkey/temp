@@ -42,3 +42,7 @@ inl char *fin(char *ch) {
         if((ifr=fp) != ied) break;
     } ret *cp = '\0', ch;
 }
+
+template<class T> inl void fin(T arr[], us n) {
+    for(us i=0; i<n; ++i) fin(arr[i]);
+}
