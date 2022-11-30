@@ -42,7 +42,7 @@ inl T dinic(G &g, us s, us t, us *hd, us *ds) {
 }
 
 // 加双向边 (u->v, c) (v->u, 0)
-template<class G, class EI>
+template<class EI, class G>
 inl void add_ce(G &g, us u, EI ei) {
     g.add(u, ei); swap(u, ei.v); // 高版本有move优化，不必^
     ei.c = 0; g.add(u, ei);
