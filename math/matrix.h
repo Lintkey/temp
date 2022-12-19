@@ -7,8 +7,8 @@
 template<us LEN, class T>
 struct SMat {
     us len; T vals[LEN][LEN];
-    inl SMat() {} inl SMat(us n):len(n) { mem(vals, 0, n); }
-    inl void init(us n) { len=n; mem(vals, 0, n); }
+    inl SMat() {} inl SMat(us n):len(n) { mem(vals, n); }
+    inl void init(us n) { len=n; mem(vals, n); }
     inl T *operator[](con us idx) { ret vals[idx]; }
     inl SMat operator*(con SMat &r) con {
         SMat res(len);

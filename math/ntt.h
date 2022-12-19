@@ -57,7 +57,7 @@ inl void CDQ_NTT(us *f, con us *g, con us L, con us R) {
     CDQ_NTT<A, B, M, G, GI>(f, g, L, MID);
     us lgl = 0, len = 1;
     whi(len<LEN) ++lgl, len<<=1;
-    mem(A+MID-L, 0, len-(MID-L));
+    mem(A+MID-L, len-(MID-L));
     for(us i=L; i<MID; ++i) A[i-L] = f[i];
     memcpy(B, g+1, len*sf(us));
     convolu(A, B, lgl);

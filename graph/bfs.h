@@ -5,7 +5,7 @@
 // struct EI { v; }
 template<class G, class D>
 inl void bfs(G &g, us s, D *dis) {
-    mem(dis, 0xff, g.n); dis[s] = 0;
+    mem(dis, g.n, 0xff); dis[s] = 0;
     queue<D> que; que.push(s);
     D ds; typename G::E *ei;
     for(us u, v; !que.empty();) {

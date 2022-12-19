@@ -5,7 +5,7 @@
 
 template<class G>
 inl void cbfs(G &g, us s, us *dis) {
-    mem(dis, 0xff, g.n); dis[s] = 0;
+    mem(dis, g.n, 0xff); dis[s] = 0;
     queue<us> que; que.push(s);
     typename G::E *ei;
     for(us u, v, ds; !que.empty();) {
