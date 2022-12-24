@@ -1,11 +1,7 @@
-// 多项式基础概念：n-1次多项式最高次项为n-1次，至多有n个系数
-//              大小为n的点值表达式唯一确定一个至多n-1次多项式(可以比n-1小)
-// 快速多项式乘法过程：dft(a), dft(b) // 将a, b变成点值表达式 O(nlgn)
-//                  a[i] *= b[i]   // 点值表达式乘法 O(n)
-//                  idft(a)        // 将a转变回普通表示法 O(nlgn)
-// 利用矩阵可以证明，只需反转系数并/len，即可逆变换，故dft和idft可共用一套代码
-// 使用方法，调用convolu(A, B, lgl)即可计算AB卷积，返回结果储存在A中，B变为对应的点值表达式
-// WARN: 必须确保(1<<lgl)>=预期卷积长度
+// 原理就是从时域对(l-1)次多项式f(t)离散傅立叶变换到频域 \
+// 时域O(l^2)卷积对应频域O(2l)乘积 \
+// (l-1)次多项式频域带为[0, l)，那么卷积结果的频域带应为[0, 2l-1) \
+// 二次优化原理是将分治转化为多次循环，并减少w = e^(2Pik/n)的重复计算
 #pragma once
 #include "../base.h"
 #include "conv.h"
@@ -45,6 +41,7 @@ inl void IDFT(CT<F> *fx, con us lgl) {
     for(us i=0; i<LEN; ++i) fx[i].real(fx[i].real()/LEN);
 }
 
+// (1<<lgl): 卷积结果的长度，包含0次项
 template<class F>
 inl void convolu(CT<F> *lfc, CT<F> *rfc, con us lgl) {
     con us LEN = 1 << lgl;
@@ -53,12 +50,13 @@ inl void convolu(CT<F> *lfc, CT<F> *rfc, con us lgl) {
     IDFT(lfc, lgl);
 }
 
-// WARN: 此实现未经测试，通常情况下答案要求取模，因此建议使用CDQ_NTT
+// 求解f = f*g型递归卷积
+// WARN: 此实现未经测试，通常情况下答案要求取模，因此建议使用`cdq_mconvolu`
 template<class F, CT<F> *A, CT<F> *B>
-inl void CDQ_FFT(CT<F> *f, CT<F> *g, con us L, con us R) {
+inl void cdq_convolu(CT<F> *f, CT<F> *g, con us L, con us R) {
     if(L+1==R) ret;
     con us MID = (L+R) >> 1, LEN = R - L;
-    CDQ_FFT<F, A, B>(f, g, L, MID);
+    cdq_convolu<F, A, B>(f, g, L, MID);
     us lgl = 0, len = 1;
     whi(len<LEN) ++lgl, len<<=1;
     mem(A+MID-L, len-(MID-L));
@@ -66,5 +64,5 @@ inl void CDQ_FFT(CT<F> *f, CT<F> *g, con us L, con us R) {
     memcpy(B, g+1, len*sf(CT<F>));
     convolu(A, B, lgl);
     for(us i=MID; i<R; ++i) f[i] += A[i-L-1];
-    CDQ_FFT<F, A, B>(f, g, MID, R);
+    cdq_convolu<F, A, B>(f, g, MID, R);
 }

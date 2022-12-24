@@ -1,66 +1,71 @@
-// 注意，ntt使用前需确保多项式的各系数%=M
-// ntt为fft的优化版本，注意，使用的前提是预期多项式系数不大于M(答案要求取质数模则可直接用)
-// dft<MOD, G>(A); dft<MOD, G>(B); A = (A*B) % MOD; idft<MOD, GI>(A)
-// M(MOD)必须为(2^m)k+1型质数
-// G为原根(gcd(G, MOD))，GI为G的逆元
+// 数论变换的情况下，原根g_n与w_n等价，原因在于 \
+// `g^(nl=(m-1)) % mod = 1`, \
+// `g_n = g^((m-1)/l) % mod`, `g_n^n % mod = 1` \
+// 为了能分治求解，设M=p*(2^k)+1，应有k>=lgl, (2^lgl)>=卷积结果长度 \
+// 原根几乎可以随便取，一般建议取3，3^i != 3^j (%mod) \
+// 998244353 = 7*17 * 2^23 + 1 \
+// 1004535809 = 479 * 2^21 + 1
 #pragma once
 #include "../base.h"
 #include "pow.h"
 
 // len(fx) == 1<<lgl >= sz(fx)
 template<us M, us G>
-inl void NTT(us *arr, us lgl) {
+inl void FNTT(us *arr, us lgl) {
     con us LEN = 1 << lgl;
     for(us i=1, j=LEN>>1; i<LEN-1; ++i) { // 顺序倒置
         if(i>j) swap(arr[i], arr[j]); // 交换，i>j保证只交换一次
         for(us l=LEN>>1; (j^=l)<l; l>>=1); // 对j做反bit加
     }
 
-    con us *ED = arr + LEN; ul w;
+    con us *ED = arr + LEN; ul g;
     for(us l=1, m=1; (l<<=1)<=LEN; m=l) {
-        con us wn = mpow<M>(G, (M-1)/l);
+        con us gn = mpow<M>(G, (M-1)/l);
         for(us *p=arr; p!=ED; p+=l) {
-            w = 1;
+            g = 1;
             for(us i=0; i<m; ++i) {
-                con us t = (ul(w)*p[m+i])%M;
+                con us t = (ul(g)*p[m+i])%M;
                 p[m+i] = p[i]>=t?p[i]-t:p[i]+(M-t);
                 p[i] = p[i]<M-t?p[i]+t:p[i]+(t-M);
-                w = (w * wn) % M; // wn : ul
+                g = (g * gn) % M; // w : ul
             }
         }
     }
 }
 
-template<us M = 998244353, us G = 3>
-inl void DFT(us *fc, us lgl) { NTT<M, G>(fc, lgl); }
+template<us M, us G>
+inl void DNT(us *fc, us lgl) { FNTT<M, G>(fc, lgl); }
 
-template<us M = 998244353, us GI = 332748118>
-inl void IDFT(us *fx, us lgl) {
-    NTT<M, GI>(fx, lgl);
+template<us M, us GI>
+inl void IDNT(us *fx, us lgl) {
+    FNTT<M, GI>(fx, lgl);
     con us LEN = 1 << lgl, inv = mpow<M>(LEN, M-2);
     for(us i=0; i<LEN; ++i) fx[i]=(ul(fx[i])*inv)%M;
 }
 
-template<us M = 998244353, us G = 3, us GI = 332748118>
-inl void convolu(us *lfc, us *rfc, con us lgl) {
+// G: 原根, GI: G的逆元`mpow(G, M-2)` \
+// (1<<lgl): 卷积结果的长度，包含0次项 \
+// WARN: 必须确保M=p*(2^k)+1, k>=lgl
+template<us M = 998244353, us GI = 332748118, us G = 3>
+inl void mconvolu(us *lfc, us *rfc, con us lgl) {
     con us LEN = 1 << lgl;
-    DFT<M, G>(lfc, lgl); DFT<M, G>(rfc, lgl);
+    DNT<M, G>(lfc, lgl); DNT<M, G>(rfc, lgl);
     for(us i=0; i<LEN; ++i) lfc[i] = ul(lfc[i]) * rfc[i] % M;
-    IDFT<M, GI>(lfc, lgl);
+    IDNT<M, GI>(lfc, lgl);
 }
 
-// CDQ_NTT用来解决递归式卷积，由于f[i]是递归定义的，因此无法暴力套用NTT
+// 递归卷积(NTT版)
 template<us *A, us *B, us M = 998244353, us G = 3, us GI = 332748118>
-inl void CDQ_NTT(us *f, con us *g, con us L, con us R) {
+inl void cdq_mconvolu(us *f, con us *g, con us L, con us R) {
     if(L+1==R) ret;
     con us MID = (L+R) >> 1, LEN = R - L;
-    CDQ_NTT<A, B, M, G, GI>(f, g, L, MID);
+    cdq_mconvolu<A, B, M, G, GI>(f, g, L, MID);
     us lgl = 0, len = 1;
     whi(len<LEN) ++lgl, len<<=1;
     mem(A+MID-L, len-(MID-L));
     for(us i=L; i<MID; ++i) A[i-L] = f[i];
     memcpy(B, g+1, len*sf(us));
-    convolu(A, B, lgl);
+    mconvolu(A, B, lgl);
     for(us i=MID; i<R; ++i) f[i] = (ul(f[i]) + A[i-L-1]) % M;
-    CDQ_NTT<A, B, M, G, GI>(f, g, MID, R);
+    cdq_mconvolu<A, B, M, G, GI>(f, g, MID, R);
 }
