@@ -32,7 +32,7 @@ inl void NTT(us *arr, us lgl) {
 }
 
 template<us M = 998244353, us G = 3>
-inl void DFT(us *fc, us lgl) { ret NTT<M, G>(fc, lgl); }
+inl void DFT(us *fc, us lgl) { NTT<M, G>(fc, lgl); }
 
 template<us M = 998244353, us GI = 332748118>
 inl void IDFT(us *fx, us lgl) {

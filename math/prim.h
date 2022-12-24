@@ -20,7 +20,7 @@ tuple<vector<us>, vector<us>, T, is> pfac(T x) {
     ret make_tuple(pri, cnt, phi, mu);
 }
 
-// pir. phi
+// pri. phi
 tuple<vector<us>, vector<us>> line_phi(us N) {
     vector<us> pri, phi(N+1, 0);
     for(us i=2; i<=N; ++i) {
