@@ -14,7 +14,7 @@
 
 // C_n^k 获取n选k状压状态(从小到大)
 template<class T=us>
-vector<T> gosper(con uc n, con uc k) {
+vector<T> gosper(con us n, con us k) {
     assert(n&&n>=k&&n<=(sf(T)<<3)); // 防止超限
     vector<T> res;
     T cur = (T(1)<<k) - 1;

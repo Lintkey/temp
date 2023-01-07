@@ -21,6 +21,8 @@ using ul = unsigned long long;
 using fs = float;
 using fl = double;
 using fx = long double;
+using Str = string;
+template<class T> using Vec = vector<T>;
 template<class T> inl cer T UINF() { ret T(-1); }
 template<class T> inl cer T INF() { ret T(0x3f3f3f3f3f3f3f3f); }
 cer con char *ANS[] = {"F", "T"};
