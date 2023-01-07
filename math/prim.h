@@ -22,7 +22,7 @@ tuple<vector<us>, vector<us>, T, is> pfac(T x) {
 
 // pri. phi
 tuple<vector<us>, vector<us>> line_phi(us N) {
-    vector<us> pri, phi(N+1, 0);
+    vector<us> pri, phi(N+1, 0); phi[1] = 1;
     for(us i=2; i<=N; ++i) {
         if(!phi[i]) {
             pri.push_back(i);
@@ -43,7 +43,8 @@ tuple<vector<us>, vector<us>> line_phi(us N) {
 // pri, phi, mu
 tuple<vector<us>, vector<us>, vector<is>> line_mu(us N) {
     vector<us> pri, phi(N+1, 0);
-    vector<is> mu(N+1, 0); mu[1] = 1;
+    vector<is> mu(N+1, 0);
+    mu[1] = phi[1] = 1;
     for(us i=2; i<=N; ++i) {
         if(!phi[i]) {
             pri.push_back(i);
