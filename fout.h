@@ -6,11 +6,11 @@
 
 char obuf[MAXB], *ofr = obuf; cer char *oed = obuf+MAXB;
 #define fwrite(SZ) fwrite(obuf, 1, SZ, stdout), ofr=obuf
-inl void pc(char c) { if(ofr==oed) fwrite(MAXB); *ofr++ = c; }
+void pc(char c) { if(ofr==oed) fwrite(MAXB); *ofr++ = c; }
 void fout() { fwrite(ofr-obuf); fflush(stdout); } // 刷新obuf->自带缓冲->stdout
 struct AF{ ~AF() { fout(); } } auto_fout; // 结束时自动fout
 
-template<class T> inl void fout(con T &v) {
+template<class T> void fout(con T &v) {
     stc char cache[40];
     stc us top = 40; T x;
     if(v<0) { pc('-'); x=-v; } else x=v;
@@ -19,12 +19,12 @@ template<class T> inl void fout(con T &v) {
 }
 
 // C式字符串简单输出，较慢
-inl void fout(con char *ch) { whi(*ch!='\0') pc(*ch++); }
+void fout(con char *ch) { whi(*ch!='\0') pc(*ch++); }
 
 // TIM 分割输出次数，此模板参数用于编译器展开循环，一般设定为MAXL/MAXB+2
 // 如果总输出少的话可以直接设定为1
 template<us TIM=2>
-inl void fout(con char *ch, us sz) {
+void fout(con char *ch, us sz) {
     for(us i=0, s; i<TIM; ++i) {
         sz -= s = min(us(oed-ofr), sz);
         memcpy(ofr, ch, s*sf(char));
@@ -35,5 +35,5 @@ inl void fout(con char *ch, us sz) {
 
 // TIM 分割输出次数，此参数用于编译器展开循环
 template<us TIM=2>
-inl void fout(con string &str) { fout<TIM>(str.c_str(), str.size()); }
+void fout(con string &str) { fout<TIM>(str.c_str(), str.size()); }
 #undef fwrite

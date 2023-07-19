@@ -10,21 +10,21 @@
 template<class T, con T &M, class U=ul>
 struct DMT {
     T raw;
-    inl cer DMT(con T _raw=T()) : raw(_raw) {}
+    cer DMT(con T _raw=T()) : raw(_raw) {}
     template<class OT>
-    inl DMT(con OT _raw=OT()) : raw(_raw%M) {};
-    inl cer operator T() con { ret raw; }
-    inl cer void add(con DMT &r) { raw+=r.raw; if(raw>=M) raw-=M; }
-    inl cer void sub(con DMT &r) { if(r.raw>raw) raw+=M-r.raw; else raw-=r.raw; }
-    inl cer void mul(con DMT &r) { raw = (U(raw) * r.raw)%M; }
-    inl DMT operator-() { DMT r; ret r.raw=M-raw, r; }
-    inl DMT &operator=(con DMT &r) { ret raw=r.raw, *this; }
-    inl DMT &operator+=(con DMT &r) { ret add(r), *this; }
-    inl DMT &operator-=(con DMT &r) { ret sub(r), *this; }
-    inl DMT &operator*=(con DMT &r) { ret mul(r), *this; }
-    friend inl DMT operator+(DMT l, con DMT &r) { ret l.add(r), l; }
-    friend inl DMT operator-(DMT l, con DMT &r) { ret l.sub(r), l; }
-    friend inl DMT operator*(DMT l, con DMT &r) { ret l.mul(r), l; }
+    DMT(con OT _raw=OT()) : raw(_raw%M) {};
+    cer operator T() con { ret raw; }
+    cer void add(con DMT &r) { raw+=r.raw; if(raw>=M) raw-=M; }
+    cer void sub(con DMT &r) { if(r.raw>raw) raw+=M-r.raw; else raw-=r.raw; }
+    cer void mul(con DMT &r) { raw = (U(raw) * r.raw)%M; }
+    DMT operator-() { DMT r; ret r.raw=M-raw, r; }
+    DMT &operator=(con DMT &r) { ret raw=r.raw, *this; }
+    DMT &operator+=(con DMT &r) { ret add(r), *this; }
+    DMT &operator-=(con DMT &r) { ret sub(r), *this; }
+    DMT &operator*=(con DMT &r) { ret mul(r), *this; }
+    friend DMT operator+(DMT l, con DMT &r) { ret l.add(r), l; }
+    friend DMT operator-(DMT l, con DMT &r) { ret l.sub(r), l; }
+    friend DMT operator*(DMT l, con DMT &r) { ret l.mul(r), l; }
 };
 
 template<con us &M>
@@ -37,21 +37,21 @@ using dml = DMT<ul, M, ix>;
 template<class T, T M, class U=ul>
 struct MT {
     T raw;
-    inl cer MT(con T _raw=T()) : raw(_raw) {}
+    cer MT(con T _raw=T()) : raw(_raw) {}
     template<class OT>
-    inl cer MT(con OT _raw=OT()) : raw(_raw%M) {};
-    inl cer operator T() con { ret raw; }
-    inl MT& add(con MT &r) { raw+=r.raw; if(raw>=M) raw-=M; ret *this; }
-    inl MT& sub(con MT &r) { if(r.raw>raw) raw+=M-r.raw; else raw-=r.raw; ret *this; }
-    inl MT& mul(con MT &r) { raw = (U(raw) * r.raw)%M; ret *this; }
-    inl MT operator-() { MT r; ret r.raw=M-raw, r; }
-    inl MT& operator=(con MT &r) { ret raw=r.raw, *this; }
-    inl MT& operator+=(con MT &r) { ret add(r); }
-    inl MT& operator-=(con MT &r) { ret sub(r); }
-    inl MT& operator*=(con MT &r) { ret mul(r); }
-    friend inl MT operator+(MT l, con MT &r) { ret l.add(r); }
-    friend inl MT operator-(MT l, con MT &r) { ret l.sub(r); }
-    friend inl MT operator*(MT l, con MT &r) { ret l.mul(r); }
+    cer MT(con OT _raw=OT()) : raw(_raw%M) {};
+    cer operator T() con { ret raw; }
+    MT& add(con MT &r) { raw+=r.raw; if(raw>=M) raw-=M; ret *this; }
+    MT& sub(con MT &r) { if(r.raw>raw) raw+=M-r.raw; else raw-=r.raw; ret *this; }
+    MT& mul(con MT &r) { raw = (U(raw) * r.raw)%M; ret *this; }
+    MT operator-() { MT r; ret r.raw=M-raw, r; }
+    MT& operator=(con MT &r) { ret raw=r.raw, *this; }
+    MT& operator+=(con MT &r) { ret add(r); }
+    MT& operator-=(con MT &r) { ret sub(r); }
+    MT& operator*=(con MT &r) { ret mul(r); }
+    friend MT operator+(MT l, con MT &r) { ret l.add(r); }
+    friend MT operator-(MT l, con MT &r) { ret l.sub(r); }
+    friend MT operator*(MT l, con MT &r) { ret l.mul(r); }
 };
 
 template<us M>

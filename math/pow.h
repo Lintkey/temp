@@ -2,7 +2,7 @@
 #include "../base.h"
 
 template<class T>
-inl T pow(T x, us nth) {
+T pow(T x, us nth) {
     T res(x!=0||nth==0);
     for(; nth; x*=x, nth>>=1)
         if(nth&1) res *= x;
@@ -10,7 +10,7 @@ inl T pow(T x, us nth) {
 }
 
 template<class N>
-inl us mpow(con us x, N nth, con us M) {
+us mpow(con us x, N nth, con us M) {
     ul res(x!=0||nth==0), bs(x);
     for(; nth; bs=(bs*bs)%M, nth>>=1)
         if(nth&1) res = (res*bs)%M;
@@ -19,7 +19,7 @@ inl us mpow(con us x, N nth, con us M) {
 
 // 常量加速
 template<us M, class N=us>
-inl us mpow(con us x, N nth=M-2) { // 默认可求逆元
+us mpow(con us x, N nth=M-2) { // 默认可求逆元
     ul res(x!=0||nth==0), bs(x);
     for(; nth; bs=(bs*bs)%M, nth>>=1)
         if(nth&1) res = (res*bs)%M;

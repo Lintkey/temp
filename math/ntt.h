@@ -11,7 +11,7 @@
 
 // len(fx) == 1<<lgl >= sz(fx)
 template<us M, us G>
-inl void FNTT(us *arr, us lgl) {
+void FNTT(us *arr, us lgl) {
     con us LEN = 1 << lgl;
     for(us i=1, j=LEN>>1; i<LEN-1; ++i) { // 顺序倒置
         if(i>j) swap(arr[i], arr[j]); // 交换，i>j保证只交换一次
@@ -34,10 +34,10 @@ inl void FNTT(us *arr, us lgl) {
 }
 
 template<us M, us G>
-inl void DNT(us *fc, us lgl) { FNTT<M, G>(fc, lgl); }
+void DNT(us *fc, us lgl) { FNTT<M, G>(fc, lgl); }
 
 template<us M, us GI>
-inl void IDNT(us *fx, us lgl) {
+void IDNT(us *fx, us lgl) {
     FNTT<M, GI>(fx, lgl);
     con us LEN = 1 << lgl, inv = mpow<M>(LEN, M-2);
     for(us i=0; i<LEN; ++i) fx[i]=(ul(fx[i])*inv)%M;
@@ -47,7 +47,7 @@ inl void IDNT(us *fx, us lgl) {
 // (1<<lgl): 卷积结果的长度，包含0次项 \
 // WARN: 必须确保M=p*(2^k)+1, k>=lgl
 template<us M = 998244353, us GI = 332748118, us G = 3>
-inl void mconvolu(us *lfc, us *rfc, con us lgl) {
+void mconvolu(us *lfc, us *rfc, con us lgl) {
     con us LEN = 1 << lgl;
     DNT<M, G>(lfc, lgl); DNT<M, G>(rfc, lgl);
     for(us i=0; i<LEN; ++i) lfc[i] = ul(lfc[i]) * rfc[i] % M;
@@ -56,7 +56,7 @@ inl void mconvolu(us *lfc, us *rfc, con us lgl) {
 
 // 递归卷积(NTT版)
 template<us *A, us *B, us M = 998244353, us G = 3, us GI = 332748118>
-inl void cdq_mconvolu(us *f, con us *g, con us L, con us R) {
+void cdq_mconvolu(us *f, con us *g, con us L, con us R) {
     if(L+1==R) ret;
     con us MID = (L+R) >> 1, LEN = R - L;
     cdq_mconvolu<A, B, M, G, GI>(f, g, L, MID);

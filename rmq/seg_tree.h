@@ -8,8 +8,8 @@
 template<us LEN, class Node>
 struct SegTree {
     Node pool[(LEN << 1) - 1], *iter = pool;
-    inl Node *operator->() { ret pool; }
-    inl void init(us l, us r) { pool->build(&(iter=pool), l, r); }
+    Node *operator->() { ret pool; }
+    void init(us l, us r) { pool->build(&(iter=pool), l, r); }
 };
 
 template<class Node>
@@ -35,7 +35,7 @@ struct BNode: public BSNode<BNode<T>> {
         val = ad = 0; mu = 1;
         ret F::init(ite, l, r);
     }
-    inl void push() {
+    void push() {
         if(mu ^ 1) { F::ln->mt(mu); F::rn->mt(mu); mu = 1; }
         if(ad) { F::ln->at(ad); F::rn->at(ad); ad = 0; }
     }
@@ -49,7 +49,7 @@ struct BNode: public BSNode<BNode<T>> {
         }
     }
 
-    inl void at(T up) { ad += up; val += up * T(F::rb - F::lb); }
+    void at(T up) { ad += up; val += up * T(F::rb - F::lb); }
     void add(us l, us r, T up) {
         if(l == F::lb && F::rb == r) at(up);
         else {
@@ -59,7 +59,7 @@ struct BNode: public BSNode<BNode<T>> {
             val = F::ln->val + F::rn->val;
         }
     }
-    inl void mt(T up) { mu *= up; ad *= up; val *= up; }
+    void mt(T up) { mu *= up; ad *= up; val *= up; }
     void mul(us l, us r, T up) {
         if(l == F::lb && F::rb == r) mt(up);
         else {
@@ -82,7 +82,7 @@ struct MNode: public BSNode<MNode<T, DEF, cmp>> {
         ad = 0; mu = 1; val = DEF;
         ret F::init(ite, l, r);
     }
-    inl void push() {
+    void push() {
         if(mu ^ 1) { F::ln->mt(mu); F::rn->mt(mu); mu = 1; }
         if(ad) { F::ln->at(ad); F::rn->at(ad); ad = 0; }
     }
@@ -100,7 +100,7 @@ struct MNode: public BSNode<MNode<T, DEF, cmp>> {
         }
     }
 
-    inl void at(T up) { ad += up; val += up; }
+    void at(T up) { ad += up; val += up; }
     void add(us l, us r, T up) {
         if(l == F::lb && F::rb == r) at(up);
         else {
@@ -110,7 +110,7 @@ struct MNode: public BSNode<MNode<T, DEF, cmp>> {
             val = cmp()(F::ln->val, F::rn->val) ? F::ln->val : F::rn->val;
         }
     }
-    inl void mt(T up) { mu *= up; ad *= up; val *= up; }
+    void mt(T up) { mu *= up; ad *= up; val *= up; }
     void mul(us l, us r, T up) {
         if(l == F::lb && F::rb == r) mt(up);
         else {

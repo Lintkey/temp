@@ -7,22 +7,26 @@
 char ibuf[MAXB], *ifr = ibuf, *ied = ibuf;
 #define fread() (ied=(ifr=ibuf)+fread(ibuf,1,MAXB,stdin),ifr==ied) // 单次fread不会等待输入
 #define ischar(c) (!isspace(c)&&c!=EOF)
-inl char gc() { ret (ifr==ied && fread()) ? EOF : *(ifr++); } // 读取并弹出字符(类似getchar)
-inl char gr() { ret (ifr==ied && fread()) ? EOF : *ifr; } // 读取字符
-inl char fit() { whi(isspace(gr())) ++ifr; ret gr(); } // 将空字符丢弃，并返回第一个非空字符或EOF
+char gc() { ret (ifr==ied && fread()) ? EOF : *(ifr++); } // 读取并弹出字符(类似getchar)
+char gr() { ret (ifr==ied && fread()) ? EOF : *ifr; } // 读取字符
+char fit() { whi(isspace(gr())) ++ifr; ret gr(); } // 将空字符丢弃，并返回第一个非空字符或EOF
 #undef fread
 
-template<class T> inl T &fin(T &v) {
+template<class T> T &fin(T &v) {
     is c = v = 0; bool f = fit()=='-'; ifr += f;
     whi(isdigit(c=gc())) v = v*10 + (c ^ 48);
     ret f ? (v=-v) : v;
 }
 
+template<class T> void fin(T arr[], us n) {
+    for(us i=0; i<n; ++i) fin(arr[i]);
+}
+
 // 读取非空字符(建议手动gc()，这个只是简写)
-template<> inl char &fin(char &v) { ret fit(), v = gc(); }
+template<> char &fin(char &v) { ret fit(), v = gc(); }
 
 // C++式字符串，如情况允许，建议使用C式字符串
-template<> inl Str &fin(Str &str) {
+template<> Str &fin(Str &str) {
     str.clear();
     whi(isspace(gr())) ++ifr;
     for(char *fp; ischar(gr()); ifr = fp) {
@@ -32,7 +36,7 @@ template<> inl Str &fin(Str &str) {
 }
 
 // C式字符串
-inl char *fin(char *ch) {
+char *fin(char *ch) {
     char *cp = ch;
     whi(isspace(gr())) ++ifr;
     for(char *fp; ischar(gr()); ifr = fp) {
@@ -43,6 +47,4 @@ inl char *fin(char *ch) {
     } ret *cp = '\0', ch;
 }
 
-template<class T> inl void fin(T arr[], us n) {
-    for(us i=0; i<n; ++i) fin(arr[i]);
-}
+template<class T=us> T fin() { T val; ret fin(val); }

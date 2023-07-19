@@ -9,7 +9,7 @@
 
 // len(fx) == 1<<lgl >= sz(fx)
 template<is fg, class F>
-inl void FFT(CT<F> *arr, con us lgl) {
+void FFT(CT<F> *arr, con us lgl) {
     con us LEN = 1 << lgl;
     for(us i=1, j=LEN>>1; i<LEN-1; ++i) { // 顺序倒置
         if(i>j) swap(arr[i], arr[j]); // 交换，i>j保证只交换一次
@@ -18,7 +18,7 @@ inl void FFT(CT<F> *arr, con us lgl) {
 
     con CT<F> *ED = arr + LEN; CT<F> w, wn;
     for(us l=1, m=1; (l<<=1)<=LEN; m=l) {
-        con F ag = PI<F>() / m;
+        con F ag = PI<F> / m;
         wn.real(cos(ag)); wn.imag(sin(fg * ag));
         for(CT<F> *p=arr; p!=ED; p+=l) {
             w.real(1); w.imag(0);
@@ -33,17 +33,17 @@ inl void FFT(CT<F> *arr, con us lgl) {
 }
 
 template<class F>
-inl void DFT(CT<F> *fc, con us lgl) { ret FFT<1>(fc, lgl); }
+void DFT(CT<F> *fc, con us lgl) { ret FFT<1>(fc, lgl); }
 
 template<class F>
-inl void IDFT(CT<F> *fx, con us lgl) {
+void IDFT(CT<F> *fx, con us lgl) {
     FFT<-1>(fx, lgl); con us LEN = 1 << lgl;
     for(us i=0; i<LEN; ++i) fx[i].real(fx[i].real()/LEN);
 }
 
-// (1<<lgl): 卷积结果的长度，包含0次项
+// (1<<lgl): 卷积结果的长度(N1+N2-1,对齐到2次幂)
 template<class F>
-inl void convolu(CT<F> *lfc, CT<F> *rfc, con us lgl) {
+void convolu(CT<F> *lfc, CT<F> *rfc, con us lgl) {
     con us LEN = 1 << lgl;
     DFT(lfc, lgl); IDFT(rfc, lgl);
     for(us i=0; i<LEN; ++i) lfc[i] *= rfc[i];
@@ -53,7 +53,7 @@ inl void convolu(CT<F> *lfc, CT<F> *rfc, con us lgl) {
 // 求解f = f*g型递归卷积
 // WARN: 此实现未经测试，通常情况下答案要求取模，因此建议使用`cdq_mconvolu`
 template<class F, CT<F> *A, CT<F> *B>
-inl void cdq_convolu(CT<F> *f, CT<F> *g, con us L, con us R) {
+void cdq_convolu(CT<F> *f, CT<F> *g, con us L, con us R) {
     if(L+1==R) ret;
     con us MID = (L+R) >> 1, LEN = R - L;
     cdq_convolu<F, A, B>(f, g, L, MID);

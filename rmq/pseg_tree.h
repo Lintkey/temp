@@ -13,19 +13,19 @@ struct PSegTree {
         Node *ln, *rn;
     } pool[PLEN], *rt[LEN], *ite;
     us sz;
-    inl void init(us l, us r) {
+    void init(us l, us r) {
         ite = pool - 1;
         build(l, r);
         rt[sz=0] = ite;
     }
     // 以...为蓝本创建新历史
-    inl void insert(us sid, us x)
+    void insert(us sid, us x)
         { insert(rt[sid], x); rt[++sz] = ite; }
     // 查询树区间[lid, rid)第k小x
-    inl us kque(us lid, us rid, us k)
+    us kque(us lid, us rid, us k)
         { ret kque(rt[lid], rt[rid], k); }
     // 查询树区间[lid, rid)在区间[l,r)上的差值
-    inl us que(us lid, us rid, us l, us r)
+    us que(us lid, us rid, us l, us r)
         { ret que(rt[lid], rt[rid], l, r); }
     void insert(Node *cur, us x) {
         if(cur->ln != nullptr) {

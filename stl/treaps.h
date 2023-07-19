@@ -110,6 +110,7 @@ struct Treaps {
         inl void rm(con T &v, bool all=false) { pool.rm(rot, v, all); }
         inl us get_rank(con T &v) { ret pool.get_rank(rot, v); }
         inl con T& rank_find(us k) { ret pool.rank_find(rot, k); }
+        inl con T& operator[](us k) { ret rank_find(k); }
         inl us upper(con T &v) { ret pool.upper(rot, v); }
         inl us lower(con T &v) { ret pool.lower(rot, v); }
     };

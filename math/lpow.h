@@ -3,9 +3,9 @@
 // WARN: 该结构体使用基于上下文，请注意使用方法
 // 用于O(1)求出给定a和m时，任意a的幂次%m的值
 // 使用前init(a, m)，询问que(p)获取(a^p)%m
-template<us SQT_L>
+template<us MX_SQT_M>
 struct LPow {
-    us SQT_M, PHI_M, M, vals[2][SQT_L];
+    us SQT_M, PHI_M, M, vals[2][MX_SQT_M];
     void init(ul a, us m) {
         SQT_M = ceil(sqrt(M=PHI_M=m));
         for(us i=2; i*i<=m; ++i)
@@ -25,4 +25,6 @@ struct LPow {
         us b = (p %= PHI_M) / SQT_M; p -= (b * SQT_M);
         ret ul(vals[0][p]) * vals[1][b] % M;
     }
+    
+    us operator[](ul p) { ret que(p); }
 };

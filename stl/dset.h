@@ -7,7 +7,7 @@ template<us LEN>
 struct DSet {
     us far[LEN] = {0}, rnk[LEN] = {0};
     inl void init(us l, us r) {
-        mem(rnk+l, 0, r-l);
+        mem(rnk+l, r-l, 0);
         for(; l<r; ++l) far[l] = l;
     }
     us find(us u) {
