@@ -33,25 +33,19 @@ void FNTT(us *arr, us lgl) {
     }
 }
 
-template<us M, us G>
-void DNT(us *fc, us lgl) { FNTT<M, G>(fc, lgl); }
-
-template<us M, us GI>
-void IDNT(us *fx, us lgl) {
-    FNTT<M, GI>(fx, lgl);
-    con us LEN = 1 << lgl, inv = mpow<M>(LEN, M-2);
-    for(us i=0; i<LEN; ++i) fx[i]=(ul(fx[i])*inv)%M;
-}
+template<us M, us G> void DNT(us *fc, us lgl) { FNTT<M, G>(fc, lgl); }
 
 // G: 原根, GI: G的逆元`mpow(G, M-2)` \
 // (1<<lgl): 卷积结果的长度，包含0次项 \
 // WARN: 必须确保M=p*(2^k)+1, k>=lgl
-template<us M = 998244353, us GI = 332748118, us G = 3>
+template<us M = 998244353, us G = 3, us GI = 332748118>
 void mconvolu(us *lfc, us *rfc, con us lgl) {
     con us LEN = 1 << lgl;
     DNT<M, G>(lfc, lgl); DNT<M, G>(rfc, lgl);
     for(us i=0; i<LEN; ++i) lfc[i] = ul(lfc[i]) * rfc[i] % M;
-    IDNT<M, GI>(lfc, lgl);
+    DNT<M, GI>(lfc, lgl);
+    con us inv = mpow<M>(LEN);
+    for(us i=0; i<LEN; ++i) lfc[i] = ul(lfc[i]) * inv % M;
 }
 
 // 递归卷积(NTT版)
@@ -62,10 +56,10 @@ void cdq_mconvolu(us *f, con us *g, con us L, con us R) {
     cdq_mconvolu<A, B, M, G, GI>(f, g, L, MID);
     us lgl = 0, len = 1;
     whi(len<LEN) ++lgl, len<<=1;
-    mem(A+MID-L, len-(MID-L));
+    mes(A+MID-L, len-(MID-L));
     for(us i=L; i<MID; ++i) A[i-L] = f[i];
-    memcpy(B, g+1, len*sf(us));
-    mconvolu(A, B, lgl);
+    mec(g+1, B, len);
+    mconvolu<M, G, GI>(A, B, lgl);
     for(us i=MID; i<R; ++i) f[i] = (ul(f[i]) + A[i-L-1]) % M;
     cdq_mconvolu<A, B, M, G, GI>(f, g, MID, R);
 }

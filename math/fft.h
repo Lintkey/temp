@@ -32,25 +32,20 @@ void FFT(CT<F> *arr, con us lgl) {
     }
 }
 
-template<class F>
-void DFT(CT<F> *fc, con us lgl) { ret FFT<1>(fc, lgl); }
-
-template<class F>
-void IDFT(CT<F> *fx, con us lgl) {
-    FFT<-1>(fx, lgl); con us LEN = 1 << lgl;
-    for(us i=0; i<LEN; ++i) fx[i].real(fx[i].real()/LEN);
-}
+template<class F> void DFT(CT<F> *fc, con us lgl) { ret FFT<1>(fc, lgl); }
+template<class F> void IDFT(CT<F> *fx, con us lgl) { FFT<-1>(fx, lgl); }
 
 // (1<<lgl): 卷积结果的长度(N1+N2-1,对齐到2次幂)
 template<class F>
 void convolu(CT<F> *lfc, CT<F> *rfc, con us lgl) {
     con us LEN = 1 << lgl;
-    DFT(lfc, lgl); IDFT(rfc, lgl);
+    DFT(lfc, lgl); DFT(rfc, lgl);
     for(us i=0; i<LEN; ++i) lfc[i] *= rfc[i];
     IDFT(lfc, lgl);
+    for(us i=0; i<LEN; ++i) lfc[i].real(lfc[i].real()/LEN);
 }
 
-// 求解f = f*g型递归卷积
+// 求解f[i] = sum(1,i,f[i-j]*g[j])型递归卷积 f[0] = 1
 // WARN: 此实现未经测试，通常情况下答案要求取模，因此建议使用`cdq_mconvolu`
 template<class F, CT<F> *A, CT<F> *B>
 void cdq_convolu(CT<F> *f, CT<F> *g, con us L, con us R) {
@@ -59,9 +54,9 @@ void cdq_convolu(CT<F> *f, CT<F> *g, con us L, con us R) {
     cdq_convolu<F, A, B>(f, g, L, MID);
     us lgl = 0, len = 1;
     whi(len<LEN) ++lgl, len<<=1;
-    mem(A+MID-L, len-(MID-L));
+    mes(A+MID-L, len-(MID-L));
     for(us i=L; i<MID; ++i) A[i-L] = f[i];
-    memcpy(B, g+1, len*sf(CT<F>));
+    mec(g+1, B, len);
     convolu(A, B, lgl);
     for(us i=MID; i<R; ++i) f[i] += A[i-L-1];
     cdq_convolu<F, A, B>(f, g, MID, R);
