@@ -29,11 +29,11 @@ struct PSegTree {
         { ret que(rt[lid], rt[rid], l, r); }
     void insert(Node *cur, us x) {
         if(cur->ln != nullptr) {
-            var ln = cur->ln, rn = cur->rn;
+            auto ln = cur->ln, rn = cur->rn;
             if(ln->rb > x) insert(ln, x), ln = ite;
             else insert(rn, x), rn = ite;
             *++ite = { cur->su+1, cur->lb, cur->rb, ln, rn };
-        } el *++ite = *cur, ++ite->su;
+        } else *++ite = *cur, ++ite->su;
     }
 private:
     void build(us l, us r) {
@@ -54,7 +54,7 @@ private:
     }
     us que(Node *ln, Node *rn, us l, us r) {
         if(ln->lb<=l && r<=ln->rb) ret rn->su - ln->su;
-        el {
+        else {
             con us MID = ln->ln->rb; us res = 0;
             if(l<MID) res += que(ln->ln, rn->ln, l, min(MID, r));
             if(r>MID) res += que(ln->rn, rn->rn, max(l, MID), r);

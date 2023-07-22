@@ -4,8 +4,8 @@
 #pragma once
 #include "base.h"
 
-char ibuf[MAXB], *ifr = ibuf, *ied = ibuf;
-#define fread() (ied=(ifr=ibuf)+fread(ibuf,1,MAXB,stdin),ifr==ied) // 单次fread不会等待输入
+char ibuf[BUF_LEN], *ifr = ibuf, *ied = ibuf;
+#define fread() (ied=(ifr=ibuf)+fread(ibuf,1,BUF_LEN,stdin),ifr==ied) // 单次fread不会等待输入
 #define ischar(c) (!isspace(c)&&c!=EOF)
 char gc() { ret (ifr==ied && fread()) ? EOF : *(ifr++); } // 读取并弹出字符(类似getchar)
 char gr() { ret (ifr==ied && fread()) ? EOF : *ifr; } // 读取字符
@@ -42,7 +42,7 @@ char *fin(char *ch) {
     for(char *fp; ischar(gr()); ifr = fp) {
         for(fp=ifr; fp<ied&&ischar(*fp); ++fp);
         con us SZ = fp - ifr;
-        memcpy(cp, ifr, SZ*sf(char));
+        mec(ifr, cp, SZ);
         cp += SZ;
     } ret *cp = '\0', ch;
 }

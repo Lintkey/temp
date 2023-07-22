@@ -4,7 +4,7 @@
 template<class FT=fl>
 is sgn(FT x) {
     if(abs(x) <= EPS<FT>) ret 0;
-    el ret x > 0 ? 1 : -1;
+    else ret x > 0 ? 1 : -1;
 }
 
 template<class FT=fl>

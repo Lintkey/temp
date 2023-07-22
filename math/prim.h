@@ -31,10 +31,10 @@ tuple<vector<us>, vector<us>> line_phi(us N) {
         let MX = N / i;
         for(let &x: pri) {
             if(x>MX) break;
-            ef(!(i%x)) {
+            else if(!(i%x)) {
                 phi[i*x] = phi[i] * x;
                 break;
-            } el phi[i*x] = phi[i] * (x-1);
+            } else phi[i*x] = phi[i] * (x-1);
         }
     }
     ret make_tuple(pri, phi);
@@ -53,10 +53,10 @@ tuple<vector<us>, vector<us>, vector<is>> line_mu(us N) {
         let MX = N / i;
         for(let &x: pri) {
             if(x>MX) break;
-            ef(!(i%x)) {
+            else if(!(i%x)) {
                 phi[i*x] = phi[i] * x;
                 break;
-            } el {
+            } else {
                 phi[i*x] = phi[i] * x;
                 mu[i*x] = -mu[i];
             }

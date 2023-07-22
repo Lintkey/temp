@@ -4,9 +4,9 @@
 #pragma once
 #include "base.h"
 
-char obuf[MAXB], *ofr = obuf; cer char *oed = obuf+MAXB;
+char obuf[BUF_LEN], *ofr = obuf; cer char *oed = obuf+BUF_LEN;
 #define fwrite(SZ) fwrite(obuf, 1, SZ, stdout), ofr=obuf
-void pc(char c) { if(ofr==oed) fwrite(MAXB); *ofr++ = c; }
+void pc(char c) { if(ofr==oed) fwrite(BUF_LEN); *ofr++ = c; }
 void fout() { fwrite(ofr-obuf); fflush(stdout); } // 刷新obuf->自带缓冲->stdout
 struct AF{ ~AF() { fout(); } } auto_fout; // 结束时自动fout
 
@@ -27,9 +27,9 @@ template<us TIM=2>
 void fout(con char *ch, us sz) {
     for(us i=0, s; i<TIM; ++i) {
         sz -= s = min(us(oed-ofr), sz);
-        memcpy(ofr, ch, s*sf(char));
+        mec(ch, ofr, s);
         if(ch+=s, (ofr+=s)!=oed) ret;
-        else fwrite(MAXB);
+        else fwrite(BUF_LEN);
     }
 }
 
