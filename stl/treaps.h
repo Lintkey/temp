@@ -89,7 +89,7 @@ struct Treaps {
     // 获取第一个(>=v的)值的位置，若v>所有值返回ite+1
     // WARN: 不能用于修改和查询区间数量
     // 区间数量查询请用get_rank(r)-get_rank(l)
-    inl us lower(us u, con T &v) {
+    us lower(us u, con T &v) {
         us res = end();
         whi(u) {
             if(val[u]<v) u = rn[u];
@@ -98,22 +98,22 @@ struct Treaps {
         } ret res;
     }
 
-    inl us end() { ret ite.end(); }
+    us end() { ret ite.end(); }
 
     struct Treap {
         Treaps &pool;
         us &rot;
 
-        inl us end() { ret pool.end(); }
-        inl us size() { ret pool.sz[rot]; }
-        inl us add(con T &v) { ret pool.add(rot, v); }
-        inl void rm(con T &v, bool all=false) { pool.rm(rot, v, all); }
-        inl us get_rank(con T &v) { ret pool.get_rank(rot, v); }
-        inl con T& rank_find(us k) { ret pool.rank_find(rot, k); }
-        inl con T& operator[](us k) { ret rank_find(k); }
-        inl us upper(con T &v) { ret pool.upper(rot, v); }
-        inl us lower(con T &v) { ret pool.lower(rot, v); }
+        us end() { ret pool.end(); }
+        us size() { ret pool.sz[rot]; }
+        us add(con T &v) { ret pool.add(rot, v); }
+        void rm(con T &v, bool all=false) { pool.rm(rot, v, all); }
+        us get_rank(con T &v) { ret pool.get_rank(rot, v); }
+        con T& rank_find(us k) { ret pool.rank_find(rot, k); }
+        con T& operator[](us k) { ret rank_find(k); }
+        us upper(con T &v) { ret pool.upper(rot, v); }
+        us lower(con T &v) { ret pool.lower(rot, v); }
     };
 
-    inl Treap operator[](us k) { ret Treap{*this, rt[k]}; }
+    Treap operator[](us k) { ret Treap{*this, rt[k]}; }
 };
