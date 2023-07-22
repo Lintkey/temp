@@ -4,8 +4,8 @@
 #include "../base.h"
 
 template<class G>
-inl void cbfs(G &g, us s, us *dis) {
-    mem(dis, g.n, 0xff); dis[s] = 0;
+void cbfs(G &g, us s, us *dis) {
+    mes(dis, g.n, 0xff); dis[s] = 0;
     queue<us> que; que.push(s);
     typename G::E *ei;
     for(us u, v, ds; !que.empty();) {
@@ -33,7 +33,7 @@ T fdfs(G &g, us u, T f) {
 // hd, ds: 缓存数组，传入两个大小与g.n(节点数)等大的无用数组即可(也可用于分析调试)
 // struct EI { v; c; }
 template<class T, class G>
-inl T dinic(G &g, us s, us t, us *hd, us *ds) {
+T dinic(G &g, us s, us t, us *hd, us *ds) {
     fdfs_hd = hd; fdfs_ds = ds; fdfs_t = t; T res=0;
     whi(cbfs(g, s, ds), ~ds[t]) {
         memcpy(hd, g.hd, g.n * sf(us));
@@ -43,7 +43,7 @@ inl T dinic(G &g, us s, us t, us *hd, us *ds) {
 
 // 加双向边 (u->v, c) (v->u, 0)
 template<class EI, class G>
-inl void add_ce(G &g, us u, EI ei) {
+void add_ce(G &g, us u, EI ei) {
     g.add(u, ei); swap(u, ei.v); // 高版本有move优化，不必^
     ei.c = 0; g.add(u, ei);
 }
