@@ -2,17 +2,22 @@
 
 考虑到情况多变，该库不封装`hash`库，下面给出常用技巧
 
-## 常用中、大质数
+## 常用质数
 
 ```cpp
-1145141     // XD
-19260817    // 某八位大质数(手动滑稽)
+131
+257
+7681
+65599
+786433
+1145141
+19260817
 1e9+7/9
 ```
 
-## 数组`hash`
+## 串`hash`
 
-针对连续有序对象的`hash`，可用于字符串哈希。另外当 $B=1$ 时为集合`hash`
+针对连续有序对象的`hash`。另外当 $B=1$ 时为集合`hash`
 
 $${\rm hash}(s_{[l,r)})=\big({\rm hash}(s_{[l,r-1)})*B+s[r-1]\big)\mod M$$
 
@@ -41,6 +46,23 @@ hs[u] = (M+hs[u]-hs[v]) % M;
 hs[v] = (hs[v]+hs[u]) % M;
 ```
 
-## 双`hash`(不是双重`hash`)
+## `hash`相关
 
-为避免碰撞，使用两个质数分别计算两次`hash`可有效避免碰撞(非碰撞空间是两者乘积)
++ $M$：取模应当配合 $B$ 的取值，其实双hash情况下自然溢出就好
++ `custom_hash`：快速且难卡的`hash`
+
+    ```cpp
+    struct custom_hash {
+        static uint64_t splitmix64(uint64_t x) {
+            x += 0x9e3779b97f4a7c15;
+            x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9;
+            x = (x ^ (x >> 27)) * 0x94d049bb133111eb;
+            return x ^ (x >> 31);
+        }
+
+        size_t operator()(uint64_t x) const {
+            static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
+            return splitmix64(x + FIXED_RANDOM);
+        }
+    };
+    ```
