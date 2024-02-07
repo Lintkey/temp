@@ -4,10 +4,10 @@
 
 // WARN: INIT!!!
 template<us LEN>
-struct DSet {
+struct DSU {
     us far[LEN] = {0}, rnk[LEN] = {0};
     void init(us l, us r) {
-        mem(rnk+l, r-l, 0);
+        mes(rnk+l, r-l);
         for(; l<r; ++l) far[l] = l;
     }
     us find(us u) {

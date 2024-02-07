@@ -5,7 +5,7 @@
 
 template<us LEN, class T, us NUM = 1>
 struct Treaps {
-    stc cer us SZ = LEN + 1;
+    static cer us SZ = LEN + 1;
     us rt[NUM], ln[SZ], rn[SZ];
     pit<1> ite;
     us sz[SZ], ct[SZ], lev[SZ];
@@ -37,7 +37,7 @@ struct Treaps {
 
     // all指定是否删除全部元素
     void rm(us &u, con T &v, bool all=false) {
-        stc us _del;
+        static us _del;
         if(u) {
             if(val[u]==v) {
                 _del = all?ct[u]:1;

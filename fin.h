@@ -4,8 +4,9 @@
 #pragma once
 #include "base.h"
 
-char ibuf[BUF_LEN], *ifr = ibuf, *ied = ibuf;
-#define fread() (ied=(ifr=ibuf)+fread(ibuf,1,BUF_LEN,stdin),ifr==ied) // 单次fread不会等待输入
+cer us IBUF_LEN = 1 << 16;
+char ibuf[1<<16], *ifr = ibuf, *ied = ibuf;
+#define fread() (ied=(ifr=ibuf)+fread(ibuf,1,IBUF_LEN,stdin),ifr==ied) // 单次fread不会等待输入
 #define ischar(c) (!isspace(c)&&c!=EOF)
 char gc() { ret (ifr==ied && fread()) ? EOF : *(ifr++); } // 读取并弹出字符(类似getchar)
 char gr() { ret (ifr==ied && fread()) ? EOF : *ifr; } // 读取字符
@@ -26,7 +27,7 @@ template<class T> void fin(T arr[], us n) {
 template<> char &fin(char &v) { ret fit(), v = gc(); }
 
 // C++式字符串，如情况允许，建议使用C式字符串
-template<> Str &fin(Str &str) {
+template<> string &fin(string &str) {
     str.clear();
     whi(isspace(gr())) ++ifr;
     for(char *fp; ischar(gr()); ifr = fp) {

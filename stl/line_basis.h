@@ -3,13 +3,13 @@
 
 template<class T, us LEN=32>
 struct LBasis {
-    T pool[LEN];
-    void init() { mem(pool, LEN); }
+    T pool[LEN], sz;
+    void init() { mes(pool, LEN, sz=0); }
     void insert(T v) {
         for(us i=LEN; ~--i;)
             if((v>>i)&1) {
                 if(pool[i]) v ^= pool[i];
-                else { pool[i] = v; ret; }
+                else { pool[i] = v; ++sz; ret; }
             }
     }
     T max() {

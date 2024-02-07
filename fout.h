@@ -4,15 +4,16 @@
 #pragma once
 #include "base.h"
 
-char obuf[BUF_LEN], *ofr = obuf; cer char *oed = obuf+BUF_LEN;
+cer us OBUF_LEN = 1<<16;
+char obuf[OBUF_LEN], *ofr = obuf; cer char *oed = obuf+OBUF_LEN;
 #define fwrite(SZ) fwrite(obuf, 1, SZ, stdout), ofr=obuf
-void pc(char c) { if(ofr==oed) fwrite(BUF_LEN); *ofr++ = c; }
+void pc(char c) { if(ofr==oed) fwrite(OBUF_LEN); *ofr++ = c; }
 void fout() { fwrite(ofr-obuf); fflush(stdout); } // 刷新obuf->自带缓冲->stdout
 struct AF{ ~AF() { fout(); } } auto_fout; // 结束时自动fout
 
 template<class T> void fout(con T &v) {
-    stc char cache[40];
-    stc us top = 40; T x;
+    static char cache[40];
+    static us top = 40; T x;
     if(v<0) { pc('-'); x=-v; } else x=v;
     do cache[--top] = (x % 10) ^ 48; whi(x/=10);
     whi(top<40) pc(cache[top++]);
@@ -29,7 +30,7 @@ void fout(con char *ch, us sz) {
         sz -= s = min(us(oed-ofr), sz);
         mec(ch, ofr, s);
         if(ch+=s, (ofr+=s)!=oed) ret;
-        else fwrite(BUF_LEN);
+        else fwrite(OBUF_LEN);
     }
 }
 
