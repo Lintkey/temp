@@ -1,4 +1,3 @@
-// TIP: 以下实现比大多数裸实现常数要小
 #pragma once
 #include "../base.h"
 
@@ -30,9 +29,23 @@ bool spfa(G &g, us s, bool *vis, us *cnt, D *dis, D init=0) {
         for(us e=g.head(u); ~e; g.next(e))
             if(ei=&g[e], (ds=dis[u]+ei->w) < dis[v=ei->v])
                 if(dis[v] = ds, !vis[v]) {
-                    if(++cnt[v]>g.n) ret false;
+                    cnt[v] = cnt[u] + 1;
+                    if(cnt[v]>g.n) ret false;
                     que.push(v), vis[v]=1;
                 }
     }
     ret true;
+}
+
+template<class G>
+void dbfs(G &g, us s, us *dis, us init=0) {
+    mes(dis, g.n, -1);
+    queue<us> que;
+    que.push(s);
+    dis[s] = init;
+    for(us u, v; !que.empty();) {
+        u = que.front(); que.pop();
+        for(us e = g.head(u); ~e; g.next(e))
+            if(!~dis[v=g[e]]) dis[v]=dis[u]+1, que.push(v);
+    }
 }
