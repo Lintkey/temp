@@ -11,7 +11,7 @@
 
 // len(fx) == 1<<lgl >= sz(fx)
 template<us M, us G>
-void FNTT(us *arr, us lgl) {
+void NTT(us *arr, us lgl) {
     con us LEN = 1 << lgl;
     for(us i=1, j=LEN>>1; i<LEN-1; ++i) { // 顺序倒置
         if(i>j) swap(arr[i], arr[j]); // 交换，i>j保证只交换一次
@@ -33,13 +33,10 @@ void FNTT(us *arr, us lgl) {
     }
 }
 
-template<us M, us G> void DNT(us *fc, us lgl) { FNTT<M, G>(fc, lgl); }
+template<us M, us G> void DNT(us *fc, us lgl) { NTT<M, G>(fc, lgl); }
 
-// G: 原根, GI: G的逆元`mpow(G, M-2)` \
-// (1<<lgl): 卷积结果的长度，包含0次项 \
-// WARN: 必须确保M=p*(2^k)+1, k>=lgl
 template<us M = 998244353, us G = 3, us GI = 332748118>
-void mconvolu(us *lfc, us *rfc, con us lgl) {
+void mconv(us *lfc, us *rfc, con us lgl) {
     con us LEN = 1 << lgl;
     DNT<M, G>(lfc, lgl); DNT<M, G>(rfc, lgl);
     for(us i=0; i<LEN; ++i) lfc[i] = ul(lfc[i]) * rfc[i] % M;
@@ -48,18 +45,34 @@ void mconvolu(us *lfc, us *rfc, con us lgl) {
     for(us i=0; i<LEN; ++i) lfc[i] = ul(lfc[i]) * inv % M;
 }
 
-// 递归卷积(NTT版)
-template<us *A, us *B, us M = 998244353, us G = 3, us GI = 332748118>
-void cdq_mconvolu(us *f, con us *g, con us L, con us R) {
+// 取模递归卷积
+template<us *BUF1, us *BUF2, us M = 998244353, us G = 3, us GI = 332748118>
+void cdq_NTT(us *f, con us *g, con us L, con us R) {
     if(L+1==R) ret;
     con us MID = (L+R) >> 1, LEN = R - L;
-    cdq_mconvolu<A, B, M, G, GI>(f, g, L, MID);
+    cdq_NTT<BUF1, BUF2, M, G, GI>(f, g, L, MID);
     us lgl = 0, len = 1;
     whi(len<LEN) ++lgl, len<<=1;
-    mes(A+MID-L, len-(MID-L));
-    for(us i=L; i<MID; ++i) A[i-L] = f[i];
-    mec(g+1, B, len);
-    mconvolu<M, G, GI>(A, B, lgl);
-    for(us i=MID; i<R; ++i) f[i] = (ul(f[i]) + A[i-L-1]) % M;
-    cdq_mconvolu<A, B, M, G, GI>(f, g, MID, R);
+    mes(BUF1+MID-L, len-(MID-L));
+    for(us i=L; i<MID; ++i) BUF1[i-L] = f[i];
+    mec(g+1, BUF2, len);
+    mconv<M, G, GI>(BUF1, BUF2, lgl);
+    for(us i=MID; i<R; ++i) f[i] = (ul(f[i]) + BUF1[i-L-1]) % M;
+    cdq_NTT<BUF1, BUF2, M, G, GI>(f, g, MID, R);
+}
+
+// 求f的逆，结果存在g中，注意lgl必须是2次幂
+template<us *BUF, us M = 998244353, us G = 3, us GI = 332748118>
+void poly_inv(us *f, us *g, us lgl) {
+    if(!~lgl) { g[0] = mpow<M>(f[0]); ret; }
+    poly_inv<BUF, M, G, GI>(f, g, lgl-1);
+    con us len = 1 << lgl, elen = len << 1;
+    mec(f, BUF, len);
+    DNT<M, G>(BUF, lgl + 1); DNT<M, G>(g, lgl + 1);
+    for(us i=0; i<elen; ++i)
+        g[i] = ul((M+2-ul(ul(BUF[i])*g[i]%M))%M)*g[i] % M;
+    DNT<M, GI>(g, lgl + 1);
+    con us inv = mpow<M>(elen);
+    for(us i=0; i<len; ++i) g[i] = ul(g[i]) * inv % M;
+    mes(g+len, len);
 }

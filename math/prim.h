@@ -67,8 +67,9 @@ tuple<vector<us>, vector<us>, vector<is>> line_mu(us N) {
 
 template<class T>
 bool is_prim(T x) {
+    if(x==1) ret 0;
     con us MX = sqrt(x);
     for(T i=2; i<=MX; ++i)
-        if(x%i) ret 0;
+        if(!(x%i)) ret 0;
     ret 1;
 }

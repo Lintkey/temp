@@ -1,7 +1,4 @@
-// 原理就是从时域对(l-1)次多项式f(t)离散傅立叶变换到频域 \
-// 时域O(l^2)卷积对应频域O(2l)乘积 \
-// (l-1)次多项式频域带为[0, l)，那么卷积结果的频域带应为[0, 2l-1) \
-// 二次优化原理是将分治转化为多次循环，并减少w = e^(2Pik/n)的重复计算
+// 注意浮点转整形有精度误差，可以floor(x+0.5)解决
 #pragma once
 #include "../base.h"
 #include "conv.h"
@@ -36,8 +33,9 @@ template<class F> void DFT(CT<F> *fc, con us lgl) { ret FFT<1>(fc, lgl); }
 template<class F> void IDFT(CT<F> *fx, con us lgl) { FFT<-1>(fx, lgl); }
 
 // (1<<lgl): 卷积结果的长度(N1+N2-1,对齐到2次幂)
+// 计算lfc与rfc的卷积，rfc -> DFT(rfc)，lfc -> (*,lfc,rfc)
 template<class F>
-void convolu(CT<F> *lfc, CT<F> *rfc, con us lgl) {
+void conv(CT<F> *lfc, CT<F> *rfc, con us lgl) {
     con us LEN = 1 << lgl;
     DFT(lfc, lgl); DFT(rfc, lgl);
     for(us i=0; i<LEN; ++i) lfc[i] *= rfc[i];
@@ -46,18 +44,19 @@ void convolu(CT<F> *lfc, CT<F> *rfc, con us lgl) {
 }
 
 // 求解f[i] = sum(1,i,f[i-j]*g[j])型递归卷积 f[0] = 1
+// 例如多项式求逆 f'[0] = 1/f[0],f'[i]=sum(1,i,f'[i-j]*f[j])
 // WARN: 此实现未经测试，通常情况下答案要求取模，因此建议使用`cdq_mconvolu`
-template<class F, CT<F> *A, CT<F> *B>
-void cdq_convolu(CT<F> *f, CT<F> *g, con us L, con us R) {
+template<class F, CT<F> *BUF1, CT<F> *BUF2>
+void rec_conv(CT<F> *f, CT<F> *g, con us L, con us R) {
     if(L+1==R) ret;
     con us MID = (L+R) >> 1, LEN = R - L;
-    cdq_convolu<F, A, B>(f, g, L, MID);
+    rec_conv<F, BUF1, BUF2>(f, g, L, MID);
     us lgl = 0, len = 1;
     whi(len<LEN) ++lgl, len<<=1;
-    mes(A+MID-L, len-(MID-L));
-    for(us i=L; i<MID; ++i) A[i-L] = f[i];
-    mec(g+1, B, len);
-    convolu(A, B, lgl);
-    for(us i=MID; i<R; ++i) f[i] += A[i-L-1];
-    cdq_convolu<F, A, B>(f, g, MID, R);
+    mes(BUF1+MID-L, len-(MID-L));
+    for(us i=L; i<MID; ++i) BUF1[i-L] = f[i];
+    mec(g+1, BUF2, len);
+    conv(BUF1, BUF2, lgl);
+    for(us i=MID; i<R; ++i) f[i] += BUF1[i-L-1];
+    rec_conv<F, BUF1, BUF2>(f, g, MID, R);
 }
